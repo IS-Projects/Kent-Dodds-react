@@ -5,10 +5,13 @@
   <script src="../react-dom.development.js"></script>
   <script src="../babel.js"></script>
   <script type="text/babel">
+    const MessageJSX = ({children}) => {
+      return <div className="message">{children}</div>
+    }
     const element = (
       <div className="container">
-        <div className="message">Hello World</div>
-        <div className="message">Goodbye World</div>
+        <MessageJSX>Hello World</MessageJSX>
+        <MessageJSX>Goodbye World</MessageJSX>
       </div>
     )
     // Just like in regular JavaScript, you often want to share code which you do
@@ -28,6 +31,7 @@
     //
     // This is only the first step to making actual React components. We'll do
     // the rest together.
+
     ReactDOM.render(element, document.getElementById('root'))
 
     // P.S. Please don't forget to ask me about React Fragments here!!

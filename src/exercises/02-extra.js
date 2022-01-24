@@ -33,21 +33,34 @@ import React from 'react'
 // 💰 Use the className for the size and style (backgroundColor) for the color
 // 💰 each of the elements should also have the "box" className applied
 
-const smallBox = (
-  <div className="box box--small" style={{backgroundColor: 'lightblue'}}>
-    small lightblue box
-  </div>
-)
-const mediumBox = (
-  <div className="box box--medium" style={{backgroundColor: 'pink'}}>
-    medium pink box
-  </div>
-)
-const largeBox = (
-  <div className="box box--large" style={{backgroundColor: 'orange'}}>
-    large orange box
-  </div>
-)
+const Box = ({size, children, className = '', style, ...otherProps}) => {
+  const boxSize = size ? `box--${size}` : ''
+  return (
+    <div
+      className={`box ${className} ${boxSize}`}
+      style={{paddingLeft: 20, ...style}}
+      {...otherProps}
+    >
+      {children}
+    </div>
+  )
+}
+
+// const smallBox = (
+//   <Box size="small" style={{backgroundColor: 'lightblue'}}>
+//     small lightblue box
+//   </Box>
+// )
+// const mediumBox = (
+//   <Box size="medium" style={{backgroundColor: 'pink'}}>
+//     medium pink box
+//   </Box>
+// )
+// const largeBox = (
+//   <Box size="large" style={{backgroundColor: 'orange'}}>
+//     large orange box
+//   </Box>
+// )
 
 // 💯 As extra credit, try to make a Box component that renders a div and
 // accepts a `size` prop rather than a className and also merges the `style`
@@ -65,9 +78,16 @@ const largeBox = (
 function Usage() {
   return (
     <div>
-      {smallBox}
-      {mediumBox}
-      {largeBox}
+      <Box size="small" style={{backgroundColor: 'lightblue'}}>
+        small lightblue box
+      </Box>
+      <Box size="medium" style={{backgroundColor: 'pink'}}>
+        medium pink box
+      </Box>
+      <Box size="large" style={{backgroundColor: 'orange'}}>
+        large orange box
+      </Box>
+      <Box>sizeless box</Box>
     </div>
   )
 }

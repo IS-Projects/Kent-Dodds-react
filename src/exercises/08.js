@@ -21,7 +21,33 @@ import React from 'react'
 //    like: `id => id`)
 // 💰 The `deserialize` function will need to pass the returned value to the
 //    Number constructor like we're already doing.
-//
+
+const useLocalStorageState = ({
+  key,
+  initialValue,
+  serialize = v => v,
+  deserialize = v => v,
+}) => {
+  const [state, setState] = React.useState(() =>
+    deserialize(window.localStorage.getItem(key) || initialValue),
+  )
+  const serializedState = serialize(state)
+  React.useEffect(() => {
+    window.localStorage.setItem(key, serializedState)
+  }, [key, serialize, serializedState])
+  return [state, setState]
+}
+
+function useLocalStorageCounter({step = 1, initialCount = 0, key = 'count'}) {
+  const [count, setCount] = useLocalStorageState({
+    key,
+    initialValue: initialCount,
+    deserialize: v => Number(v),
+  })
+  const increment = () => setCount(c => c + step)
+  return [count, increment]
+}
+
 // 💰 The end result of your Counter should look like this:
 // function Counter({step = 1, initialCount = 0}) {
 //   const [count, setCount] = useLocalStorageState({
@@ -33,27 +59,27 @@ import React from 'react'
 //   return <button onClick={increment}>{count}</button>
 // }
 
-function Counter({step = 1, initialCount = 0}) {
-  const [count, setCount] = React.useState(() =>
-    Number(window.localStorage.getItem('count') || initialCount),
-  )
-  const increment = () => setCount(c => c + step)
-  React.useEffect(() => {
-    window.localStorage.setItem('count', count)
-  }, [count])
-  return <button onClick={increment}>{count}</button>
-}
+// function Counter({step = 1, initialCount = 0}) {
+//   const [count, setCount] = React.useState(() =>
+//     Number(window.localStorage.getItem('count') || initialCount),
+//   )
+//   const increment = () => setCount(c => c + step)
+//   React.useEffect(() => {
+//     window.localStorage.setItem('count', count)
+//   }, [count])
+//   return <button onClick={increment}>{count}</button>
+// }
 
 // 💯 Create another custom hook called useLocalStorageCounter which uses the
 // useLocalStorageState custom hook and creates the increment function.
 // 💰 The end result of your Counter should look like this:
-// function Counter({step, initialCount}) {
-//   const [count, increment] = useLocalStorageCounter({
-//     step,
-//     initialCount,
-//   })
-//   return <button onClick={increment}>{count}</button>
-// }
+function Counter({step, initialCount}) {
+  const [count, increment] = useLocalStorageCounter({
+    step,
+    initialCount,
+  })
+  return <button onClick={increment}>{count}</button>
+}
 // NOTE: useLocalStorageCounter will need to provide default values for step and initialCount
 
 ////////////////////////////////////////////////////////////////////

@@ -18,13 +18,13 @@ import React from 'react'
 // has changed.
 
 // 🐨 Accept props to the `App` component
-function App() {
+function App({onButtonClick, onInputChange}) {
   return (
     <div>
       {/* 🐨 apply the appropriate click handler here */}
-      <button>Click me!</button>
+      <button onClick={onButtonClick}>Click me!</button>
       {/* 🐨 apply the appropriate change handler here */}
-      <input />
+      <input onChange={onInputChange} />
     </div>
   )
 }

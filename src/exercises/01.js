@@ -19,7 +19,10 @@ function SayHello(props) {
 // 🐨 Add a property called `propTypes` to the SayHello function
 // which is an object that has a key for each prop we want to
 // validate and is assigned to the type from PropTypes.
-//
+SayHello.propTypes = {
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+}
 // 💰 to find out what's available, try this:
 // console.log(PropTypes)
 // 💰 You can read the documentation for PropTypes on npm: https://npm.im/prop-types

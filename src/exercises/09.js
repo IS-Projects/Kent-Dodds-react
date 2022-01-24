@@ -1,5 +1,5 @@
 // Tic Tac Toe: Advanced State
-import React from 'react'
+import React, {useState} from 'react'
 
 // We're going to build tic-tac-toe! If you've gone through React's official
 // tutorial, this was lifted from that (except that example still uses classes).
@@ -19,7 +19,8 @@ import React from 'react'
 function Board() {
   // 🐨 Use React.useState for both the elements of state you need
   // 💰 To create an empty array with 9 slots, you can use: `Array(9).fill(null)`
-
+  const [squares, setSquares] = useState(Array(9).fill(null))
+  console[(xIsNext, setXIsNext)] = useState(true)
   // This is the function your square click handler will call. `square` should
   // be an index. So if they click the center square, this will be `5`.
   // eslint-disable-next-line no-unused-vars
@@ -27,17 +28,21 @@ function Board() {
     // 🐨 first determine if there's already a winner, return early if there is.
     // 💰 there's a `calculateWinner` function already written for you at the
     //    bottom of this file. Fee free to use `calculateWinner(squares)`.
-    //
     // 🐨 If there's already a value at the square index, then return early.
     // 💰 you can combine this check with the previous using `||`.
-    //
+    if (calculateWinner(squares) || squares[square]) {
+      return
+    }
     // 🦉 It's typically a bad idea to manipulate state in React
     // 🐨 make a copy of the squares array (💰 `[...squares]` will do it!)
+    let squaresCopy = [...squares]
     // 🐨 Set the value of the square that was selected
     // 💰 `squaresCopy[square] = xIsNext ? 'X' : 'O'`
-    //
+    squaresCopy[square] = xIsNext ? 'X' : 'O'
     // 🐨 toggle the xIsNext state
+    setXIsNext(prevState => !prevState)
     // 🐨 set the squares to your copy
+    setSquares(squaresCopy)
   }
 
   // let's calculate the status we'll display at the top of the board.

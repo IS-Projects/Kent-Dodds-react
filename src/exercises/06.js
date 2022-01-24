@@ -1,5 +1,5 @@
 // Counter: useEffect
-import React from 'react'
+import React, {useEffect} from 'react'
 
 // React.useEffect is a built-in hook that allows you to run some custom code
 // after React renders (and re-renders) your component to the DOM. It accepts
@@ -17,10 +17,14 @@ import React from 'react'
 function Counter({step = 1, initialCount = 0}) {
   // 🐨 initialize the state to the value from localStorage
   // 💰 Number(window.localStorage.getItem('count') || initialCount)
+  initialCount = Number(window.localStorage.getItem('count') || initialCount)
   const [count, setCount] = React.useState(initialCount)
   const increment = () => setCount(c => c + step)
   // 🐨 Here's where you'll use `React.useEffect`.
   // The callback should set the `count` in localStorage.
+  useEffect(() => {
+    window.localStorage.setItem('count', count)
+  }, [count])
   return <button onClick={increment}>{count}</button>
 }
 

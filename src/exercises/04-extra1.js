@@ -64,13 +64,13 @@ import React, {useState} from 'react'
 // many times the the button is clicked. The text of the button should be the
 // number of times the button has been clicked.
 
-function Counter() {
+function Counter({step = 1, intialCount = 0}) {
   // 🐨 use React.useState here
-  const [counter, setCounter] = useState(0)
+  const [counter, setCounter] = useState(intialCount)
   // 🐨 create an increment function that calls the state updater you get from
   //    React.useState to increment the count
   const incremetHandler = () => {
-    setCounter(prevState => prevState + 1)
+    setCounter(prevState => prevState + step)
   }
   // 🐨 render the count you get from React.useState inside the button and use
   //    your increment function as the onClick handler.

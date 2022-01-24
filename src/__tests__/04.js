@@ -1,7 +1,7 @@
 import React from 'react'
 import {render, fireEvent} from '@testing-library/react'
-import Usage from '../exercises-final/04'
-// import Usage from '../exercises/04'
+// import Usage from '../exercises-final/04'
+import Usage from '../exercises/04'
 
 test('clicking the button increments the count', () => {
   const {container} = render(<Usage />)

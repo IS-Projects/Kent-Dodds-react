@@ -40,13 +40,13 @@ import React from 'react'
 
 function Counter({step = 1, initialCount = 0}) {
   // 🐨 👇 change this from React.useState(value) to React.useState(() => value)
-  const [count, setCount] = React.useState(
+  const [count, setCount] = React.useState(() =>
     Number(window.localStorage.getItem('count') || initialCount),
   )
   const increment = () => setCount(c => c + step)
   React.useEffect(() => {
     window.localStorage.setItem('count', count)
-  })
+  }, [count])
   // 🐨 👆 on the line above, add the "inputs array" to signal to React that
   // this effect depends on `count`
   return <button onClick={increment}>{count}</button>
