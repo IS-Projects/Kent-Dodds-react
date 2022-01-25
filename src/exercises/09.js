@@ -20,11 +20,11 @@ function Board() {
   // 🐨 Use React.useState for both the elements of state you need
   // 💰 To create an empty array with 9 slots, you can use: `Array(9).fill(null)`
   const [squares, setSquares] = useState(Array(9).fill(null))
-  console[(xIsNext, setXIsNext)] = useState(true)
+  const [xIsNext, setXIsNext] = useState(true)
   // This is the function your square click handler will call. `square` should
   // be an index. So if they click the center square, this will be `5`.
   // eslint-disable-next-line no-unused-vars
-  function selectSquare(square) {
+  const selectSquare = square => {
     // 🐨 first determine if there's already a winner, return early if there is.
     // 💰 there's a `calculateWinner` function already written for you at the
     //    bottom of this file. Fee free to use `calculateWinner(squares)`.
@@ -35,7 +35,7 @@ function Board() {
     }
     // 🦉 It's typically a bad idea to manipulate state in React
     // 🐨 make a copy of the squares array (💰 `[...squares]` will do it!)
-    let squaresCopy = [...squares]
+    const squaresCopy = [...squares]
     // 🐨 Set the value of the square that was selected
     // 💰 `squaresCopy[square] = xIsNext ? 'X' : 'O'`
     squaresCopy[square] = xIsNext ? 'X' : 'O'
@@ -45,32 +45,68 @@ function Board() {
     setSquares(squaresCopy)
   }
 
+  const renderSquare = i => (
+    <button className="square" onClick={() => selectSquare(i)}>
+      {squares[i]}
+    </button>
+  )
   // let's calculate the status we'll display at the top of the board.
   // 🐨 determine whether there's a winner (💰 `calculateWinner(squares)`).
-  //
+  const winner = calculateWinner(squares)
+  let status
+
   // We can have the following statuses:
   // `Winner: ${winner}`
-  // `Scratch: Cat's game` (💰 if every square in squares is truthy and there's no winner, then it's a scratch)
-  // `Next player: ${xIsNext ? 'X' : 'O'}`
-  //
+  if (winner) {
+    status = `Winner: ${winner}`
+    // `Scratch: Cat's game` (💰 if every square in squares is truthy and there's no winner, then it's a scratch)
+  } else if (squares.every(Boolean)) {
+    status = `Scratch: Cat's game`
+    // `Next player: ${xIsNext ? 'X' : 'O'}`
+  } else {
+    status = `Next player: ${xIsNext ? 'X' : 'O'}`
+  }
   // 🐨 assign a `status` variable to one of these, and render it above the
-  //    board in a div with the className "status"
+  //    board in a div with the className "status
+
   //
   // 🐨 return your JSX with this basic structure:
-  // return (
-  //   <div>
-  //     <div className="status">{/* put the status here */}</div>
-  //     {/* you'll need 3 board-rows and each will have 3 squares */}
-  //     <div className="board-row">
-  //       <button className="square" onClick={() => selectSquare(0)}>
-  //         {squares[0]}
-  //       </button>
-  //       {/* etc... */}
-  //     </div>
-  //     {/* etc... */}
-  //   </div>
-  // )
-  return 'todo'
+  return (
+    <div>
+      <div className="status">{status}</div>
+      {/* you'll need 3 board-rows and each will have 3 squares */}
+      {/* The first block below would be the option without using renderSquare */}
+      {/* <div className="board-row">
+        <button className="square" onClick={() => selectSquare(0)}>
+          {squares[0]}
+        </button>
+        <button className="square" onClick={() => selectSquare(0)}>
+          {squares[1]}
+        </button>
+        <button className="square" onClick={() => selectSquare(0)}>
+          {squares[2]}
+        </button>
+      </div> */}
+      <div className="board-row">
+        {renderSquare(0)}
+        {renderSquare(1)}
+        {renderSquare(2)}
+      </div>
+      <div className="board-row">
+        {renderSquare(3)}
+        {renderSquare(4)}
+        {renderSquare(5)}
+      </div>
+      <div className="board-row">
+        {renderSquare(6)}
+        {renderSquare(7)}
+        {renderSquare(8)}
+      </div>
+
+      {/* etc... */}
+    </div>
+  )
+  // return 'todo'
 }
 
 // 💯 See if you can figure out a nice way to avoid all the repetition in the square buttons
