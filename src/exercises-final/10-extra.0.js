@@ -35,6 +35,7 @@ function historyReducer(state, action) {
     case 'ADD_ENTRY': {
       const newHistory = history.slice(0, entryNumber + 1)
       newHistory[newHistory.length] = action.newEntry
+      console.log(newHistory)
       return {
         history: newHistory,
         entryNumber: newHistory.length - 1,
