@@ -1,7 +1,7 @@
 import React from 'react'
 import {render} from '@testing-library/react'
-import Usage from '../exercises-final/15'
-// import Usage from '../exercises/15'
+// import Usage from '../exercises-final/15'
+import Usage from '../exercises/15'
 
 test('renders', () => {
   render(<Usage />)

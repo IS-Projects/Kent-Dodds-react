@@ -26,7 +26,7 @@ function App() {
       </button>
       {items.map(i => (
         // 🐨 this div needs a key. Set it to i.id
-        <div>
+        <div key={i.id}>
           <button onClick={() => removeItem(i)}>-</button>
           {i.value}:
           <input defaultValue={i.value} />
