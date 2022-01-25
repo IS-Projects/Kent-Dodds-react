@@ -1,7 +1,7 @@
 import React from 'react'
 import {render, fireEvent} from '@testing-library/react'
-import Usage from '../exercises-final/09'
-// import Usage from '../exercises/09'
+// import Usage from '../exercises-final/09'
+import Usage from '../exercises/09'
 // import Usage from '../exercises/09.classes'
 
 test('can play a game of tic tac toe', () => {

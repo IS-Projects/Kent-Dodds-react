@@ -1,5 +1,5 @@
 // Tic Tac Toe: useReducer
-import React from 'react'
+import React, { useReducer } from 'react'
 
 // Here's the game that supports history. We've moved the <Board /> to a simple
 // UI-only component (sometimes referred to as a "presentational component").
@@ -48,7 +48,7 @@ import React from 'react'
 // With that example, I'd like you to take all the state in Game and put it into
 // a single React.useReduce(reducer, initialState) hook.
 
-function Board({squares, onClick}) {
+function Board({ squares, onClick }) {
   const renderSquare = i => (
     <button className="square" onClick={() => onClick(i)}>
       {squares[i]}
@@ -76,43 +76,64 @@ function Board({squares, onClick}) {
   )
 }
 
+// 🦉 one of the benefits of a reducer is that it allows you to extract a
+// bunch of component logic from within the component to the reducer. This
+// means that your components are a bit simpler and logic is all in the same
+// place resulting in an easier maintenance situation for you :)
+
+// the selectSquare function's entire purpose is to perform calculations to
+// determine what state changes should happen (if any). That's precisely what
+// the reducer is responsible for!
+// 🐨 let's move this logic to your reducer and instead call dispatch and let
+// dispatch handle this to determine the next state.
+function gameReducer(state, action) {
+  switch (action.type) {
+    case 'SELECT_SQUARE': {
+      const xIsNext = state.stepNumber % 2 === 0
+      const newHistory = state.history.slice(0, state.stepNumber + 1)
+      const current = newHistory[newHistory.length - 1]
+      const squares = [...current.squares]
+
+      if (calculateWinner(squares) || squares[action.square]) {
+        return state
+      }
+
+      squares[action.square] = xIsNext ? 'X' : 'O'
+      state.history = [...newHistory, { squares }]
+      state.stepNumber = newHistory.length
+      return { history: state.history, stepNumber: state.stepNumber }
+    }
+    case 'SET_NEW_STEP': {
+      return { ...state, stepNumber: action.stepNumber }
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`)
+    }
+  }
+
+}
+
 function Game() {
   // 🐨 Take the next two lines and replace them with a single React.useReducer call
-  const [history, setHistory] = React.useState([{squares: Array(9).fill(null)}])
-  const [stepNumber, setStepNumber] = React.useState(0)
+  // const [history, setHistory] = React.useState([{squares: Array(9).fill(null)}])
+  // const [stepNumber, setStepNumber] = React.useState(0)
+
+  const [state, dispatch] = useReducer(gameReducer, { history: [{squares: Array(9).fill(null)}], stepNumber: 0 })
 
   // this is "derived state" (in our original example of this, we actually
   // stored it in state, but now we can derive that because we're storing the
   // step number) meaning that it's state you can calculate based on other
   // state. 💰 You'll need to make this same calculation in the reducer as well
   // as here.
+  const { history, stepNumber } = state
   const xIsNext = stepNumber % 2 === 0
 
-  // 🦉 one of the benefits of a reducer is that it allows you to extract a
-  // bunch of component logic from within the component to the reducer. This
-  // means that your components are a bit simpler and logic is all in the same
-  // place resulting in an easier maintenance situation for you :)
-
-  // the selectSquare function's entire purpose is to perform calculations to
-  // determine what state changes should happen (if any). That's precisely what
-  // the reducer is responsible for!
-  // 🐨 let's move this logic to your reducer and instead call dispatch and let
-  // dispatch handle this to determine the next state.
   function selectSquare(square) {
-    const newHistory = history.slice(0, stepNumber + 1)
-    const current = newHistory[newHistory.length - 1]
-    const squares = [...current.squares]
-
-    if (calculateWinner(squares) || squares[square]) {
-      return
-    }
-
-    squares[square] = xIsNext ? 'X' : 'O'
-    setHistory([...newHistory, {squares}])
-    setStepNumber(newHistory.length)
+    dispatch({ type: 'SELECT_SQUARE', square })
   }
 
   const current = history[stepNumber]
+  console.log(current)
   const winner = calculateWinner(current.squares)
   let status
   if (winner) {
@@ -127,7 +148,7 @@ function Game() {
     const desc = stepNumber ? `Go to move #${stepNumber}` : 'Go to game start'
     return (
       <li key={stepNumber}>
-        <button onClick={() => setStepNumber(stepNumber)}>{desc}</button>
+        <button onClick={() => dispatch({ type: "SET_NEW_STEP", stepNumber })}>{desc}</button>
       </li>
     )
   })

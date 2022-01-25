@@ -1,7 +1,7 @@
 import React from 'react'
 import {render, fireEvent} from '@testing-library/react'
-import Usage from '../exercises-final/10'
-// import Usage from '../exercises/10'
+// import Usage from '../exercises-final/10'
+import Usage from '../exercises/10'
 
 test('can play a game of tic tac toe', () => {
   const {container, getByText} = render(<Usage />)
