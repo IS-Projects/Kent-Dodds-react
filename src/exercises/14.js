@@ -1,5 +1,5 @@
 // Controlled Form Fields
-import React from 'react'
+import React, { useReducer } from 'react'
 
 // Here, we want to be able to update the state of the form fields based on
 // changes to other fields. This uses a pattern called "controlled props" which
@@ -21,6 +21,8 @@ import React from 'react'
 // So the job of your reducer is to take the value from the input that
 // experienced the change and turn its values into an array.
 // eslint-disable-next-line no-unused-vars
+const availableOptions = ['apple', 'grape', 'cherry', 'orange', 'pear', 'peach']
+
 function getStateFromArray(array) {
   return {
     commaSeparated: array.join(','),
@@ -37,12 +39,14 @@ function fancyFormReducer(state, action) {
       // 🐨 change this to handle the `action.value` from the comma-separated
       // input.
       // 💰 `return getStateFromArray(arrayOfValues)`
-      return state
+      const allVals = action.value.split(',')
+      return getStateFromArray(allVals)
     }
     case 'MULTILINE': {
       // 🐨 change this to handle the `action.value` from the multiline input.
       // 💰 `return getStateFromArray(arrayOfValues)`
-      return state
+      const allVals = action.value.split('\n')
+      return getStateFromArray(allVals)
     }
     case 'MULTISELECT': {
       // 🐨 change this to handle the `action.selectedOptions` from the select.
@@ -51,14 +55,14 @@ function fancyFormReducer(state, action) {
       // 💰 you can use `action.selectedOptions.map` to map over those options
       // and get your array of values.
       // 💰 `return getStateFromArray(arrayOfValues)`
-      return state
+      const allVals = Array.from(action.selectedOptions).map(option => option.value)
+      return getStateFromArray(allVals)
     }
     default:
       throw new Error(`Unhandled action type: ${action.type}`)
   }
 }
 
-const availableOptions = ['apple', 'grape', 'cherry', 'orange', 'pear', 'peach']
 
 function MyFancyForm() {
   // because React will not be able to update the state of the fields once we
@@ -68,12 +72,24 @@ function MyFancyForm() {
   //   commaSeparated: '' (for the <input />)
   //   multiline: '' (for the <textarea />)
   //   multiSelect: [] (for the <select />)
-  //
+  const [ state, dispatch ] = useReducer(fancyFormReducer, { commaSeparated: '', multiline: '', multiSelect: [] })
   // Now we need to add an onChange event handler for each of the form fields.
   // Each handler will be unique to the type of input we're using, but they
   // will all be pretty simple and just call dispatch with the information the
   // reducer needs to calculate the new state (in my final version I just use
   // inline arrow functions that call dispatch).
+  const { commaSeparated, multiline, multiSelect } = state
+  function inputChangeHandler(e) {
+    dispatch({ type: 'COMMA_SEPARATED', value: e.target.value })
+  }
+
+  function textAreaChangeHandler(e) {
+    dispatch({ type: 'MULTILINE', value: e.target.value })
+  }
+
+  function selectChangeHandler(e) {
+    dispatch({ type: 'MULTISELECT', selectedOptions: e.target.selectedOptions })
+  }
 
   return (
     <form>
@@ -84,7 +100,9 @@ function MyFancyForm() {
           <input
             type="text"
             // 🐨 add a value prop for the commaSeparated state
+            value={commaSeparated}
             // 🐨 also add an onChange to call dispatch for COMMA_SEPARATED
+            onChange={inputChangeHandler}
           />
         </label>
       </div>
@@ -95,7 +113,9 @@ function MyFancyForm() {
           <textarea
             rows={availableOptions.length}
             // 🐨 add a value prop for the multiline state
+            value={multiline}
             // 🐨 also add an onChange to call dispatch for MULTILINE
+            onChange={textAreaChangeHandler}
           />
         </label>
       </div>
@@ -107,7 +127,9 @@ function MyFancyForm() {
             multiple
             size={availableOptions.length}
             // 🐨 add a value prop for the state of the multiSelect
+            value={multiSelect}
             // 🐨 also add an onChange to call dispatch for MULTISELECT
+            onChange={selectChangeHandler}
           >
             {availableOptions.map(optionValue => (
               <option key={optionValue} value={optionValue}>
