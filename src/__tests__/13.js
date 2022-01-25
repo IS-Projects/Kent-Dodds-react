@@ -1,7 +1,7 @@
 import React from 'react'
 import {render, fireEvent} from '@testing-library/react'
-import Usage from '../exercises-final/13'
-// import Usage from '../exercises/13'
+// import Usage from '../exercises-final/13'
+import Usage from '../exercises/13'
 
 beforeAll(() => {
   jest.spyOn(console, 'log').mockImplementation(() => {})

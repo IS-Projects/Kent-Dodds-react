@@ -1,5 +1,5 @@
 // Dynamic Forms
-import React from 'react'
+import React, { useState } from 'react'
 
 // If we want our form to be dynamic, we'll need a few things:
 // 1. Component state to store the dynamic values (an error message in our case)
@@ -11,9 +11,10 @@ import React from 'react'
 // and use that to know whether to render the message as well as whether to
 // disable the submit button.
 
-function UsernameForm({onSubmitUsername, getErrorMessage}) {
+function UsernameForm({ onSubmitUsername, getErrorMessage }) {
   // 🐨 add some state (with React.useState) for the error.
   // 💰 initialize it to whatever comes back from `getErrorMessage('')`
+  const [errorMsg, setErrorMsg] = useState(getErrorMessage(''))
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -26,6 +27,9 @@ function UsernameForm({onSubmitUsername, getErrorMessage}) {
   // 💰 remember that your change handler will get called with an event that
   // has a `target` property that references the DOM node that is responsible
   // for the event, so you can get the value from event.target.value
+  function handleChange(e) {
+    setErrorMsg(getErrorMessage(e.target.value))
+  }
 
   // 🐨 add an `onChange` handler to the `input`
   return (
@@ -36,10 +40,12 @@ function UsernameForm({onSubmitUsername, getErrorMessage}) {
         type="text"
         name="username"
         // 🐨 add your onChange handler here
+        onChange={handleChange}
       />
       {/* 🐨 if there's an error, then render it in a div here */}
+      {errorMsg && <div style={{ color: 'red' }}>{errorMsg}</div>}
       {/* 🐨 add a disabled prop to this button that's set to true if there's an error */}
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={errorMsg ? true : false}>Submit</button>
     </form>
   )
 }
@@ -63,7 +69,7 @@ function Usage() {
     return null
   }
   return (
-    <div style={{minWidth: 400}}>
+    <div style={{ minWidth: 400 }}>
       <UsernameForm
         onSubmitUsername={onSubmitUsername}
         getErrorMessage={getErrorMessage}
