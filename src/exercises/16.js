@@ -1,5 +1,5 @@
 // Making HTTP requests
-import React from 'react'
+import React, { useEffect, useReducer } from 'react'
 
 // 🦉 There are lots of ways to make HTTP requests in React components. React is
 // currently working on a new feature called Suspense which is fantastic and
@@ -22,29 +22,37 @@ function fetchPokemonReducer(state, action) {
   switch (action.type) {
     case 'FETCHING': {
       // 🐨 return the state that should exist when fetching starts
-      return state
+      return { ...state, loading: true }
     }
     case 'FETCHED': {
       // 🐨 return the state that should exist when the fetch request finishes
-      return state
+      return {
+        error: null,
+        loading: false,
+        pokemon: action.pokemon,
+      }
     }
     case 'FETCH_ERROR': {
       // 🐨 return the state that should exist when the fetch request fails
-      return state
+      return { ...state, error: action.error, loading: false }
     }
     default:
       throw new Error(`Unhandled action type: ${action.type}`)
   }
 }
 
-function FetchPokemon({pokemonName}) {
+function FetchPokemon({ pokemonName }) {
   // 🐨 Have state for the pokemon (null), the error state (null), and the
   // loading state (false). I recommend you use a reducer for this. I've given
   // you a starter reducer above because I love you.
+  const [state, dispatch] = useReducer(fetchPokemonReducer, { pokemon: null, error: null, loading: false })
+
+  const { pokemon, error, loading } = state
+
   // 🐨 Use the `fetchPokemon` function below to fetch a pokemon by its name:
   //   fetchPokemon('Pikachu').then(
   //     pokemon => { /* call set state with the pokemon and loading: false */},
-  //     error => {/* call set state with the error loading: false */},
+  //     error => {/* call set state with the error and loading: false */},
   //   )
 
   // 🐨 use React.useEffect where the callback should be called whenever the
@@ -54,11 +62,21 @@ function FetchPokemon({pokemonName}) {
   // 🐨 when the promise resolves, dispatch FETCHED and send the pokemon
   // 🐨 if the promise rejects, dispatch a FETCH_ERROR and send the error
 
+  useEffect(() => {
+    dispatch({ type: 'FETCHING' })
+    fetchPokemon(pokemonName).then(
+      pokemon => dispatch({ type: 'FETCHED' , pokemon}),
+      error => dispatch({ type: 'FETCH_ERROR', error }),
+    )
+  }, [pokemonName])
+
   // 🐨 Render the appropriate content based on the state:
   //    1. loading: '...'
   //    2. error: 'ERROR!'
   //    3. pokemon: the JSON.stringified pokemon in a <pre></pre>
-  return 'todo'
+  return loading ? ('...') :
+    error ? ('ERROR!') :
+      (<pre>{JSON.stringify(pokemon || 'Unknown', null, 2)}</pre>)
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -84,6 +102,7 @@ function fetchPokemon(name) {
         }
       }
     }
+    
   `
 
   return window
@@ -95,7 +114,7 @@ function fetchPokemon(name) {
       },
       body: JSON.stringify({
         query: pokemonQuery,
-        variables: {name},
+        variables: { name },
       }),
     })
     .then(r => r.json())
@@ -103,7 +122,7 @@ function fetchPokemon(name) {
 }
 
 class Usage extends React.Component {
-  state = {pokemonName: null}
+  state = { pokemonName: null }
   inputRef = React.createRef()
   handleSubmit = e => {
     e.preventDefault()
@@ -112,7 +131,7 @@ class Usage extends React.Component {
     })
   }
   render() {
-    const {pokemonName} = this.state
+    const { pokemonName } = this.state
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
