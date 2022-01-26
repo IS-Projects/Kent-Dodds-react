@@ -1,7 +1,7 @@
 import React from 'react'
 import {render, fireEvent, screen} from '@testing-library/react'
-import Usage from '../exercises-final/17'
-// import Usage from '../exercises/17'
+// import Usage from '../exercises-final/17'
+import Usage from '../exercises/17'
 
 test('logs only when the state is changed', () => {
   jest.spyOn(console, 'log').mockImplementation(() => {})

@@ -1,5 +1,5 @@
 // React.memo
-import React from 'react'
+import React, { memo } from 'react'
 
 // Typically you don't need to do much for your app to be fast with React. I've
 // been writing React apps since 2015 and I've never once needed to use the
@@ -47,16 +47,18 @@ import React from 'react'
 // re-rendered (unless the props change).
 
 // 🐨 Wrap the "Upper" component here in React.memo
-function Upper({children}) {
-  const [count, setCount] = React.useState(0)
-  console.log('rendered', children) // don't change this line... (it's used in the tests)
-  return (
-    <div>
-      Uppercase version: {children.toUpperCase()}{' '}
-      <button onClick={() => setCount(count + 1)}>{count}</button>
-    </div>
-  )
-}
+const Upper = memo(
+  function Upper({ children }) {
+    const [count, setCount] = React.useState(0)
+    console.log('rendered', children) // don't change this line... (it's used in the tests)
+    return (
+      <div>
+        Uppercase version: {children.toUpperCase()}{' '}
+        <button onClick={() => setCount(count + 1)}>{count}</button>
+      </div>
+    )
+  }
+)
 
 ////////////////////////////////////////////////////////////////////
 //                                                                //
