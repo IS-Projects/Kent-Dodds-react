@@ -1,10 +1,11 @@
 // Graph: Lazy-loading with React.lazy
-import React from 'react'
+import React, { Suspense } from 'react'
 // 🐨 remove this Graph import 💣
-import Graph from '../graph'
+// import Graph from '../graph'
 
 // 🐨 use React.lazy to get the Graph component via a dynamic import
 // 📜 https://reactjs.org/docs/code-splitting.html#reactlazy
+const Graph = React.lazy(() => import('../graph'));
 
 function GraphShower() {
   const [showGraph, setShowGraph] = React.useState(false)
@@ -25,11 +26,13 @@ function GraphShower() {
           loaded
           📜 https://reactjs.org/docs/code-splitting.html#suspense
         */}
+        <Suspense fallback={<div>Loading ...</div>}>
         {showGraph ? (
           <div className="totally-centered">
             <Graph />
           </div>
         ) : null}
+        </Suspense>
       </div>
     </div>
   )
